@@ -31,6 +31,41 @@
   var dbRef = firebase.database().ref().child('text');
   dbRef.on('value', snap => bigOne.innerText = snap.val());
 
+
+  var email = "javier.xing127@gmail.com";
+  var password = "password";
+
+  firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error){
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    console.log(error.code);
+    console.log(error.message);
+  }).then(function(){
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      // User is signed in.
+      firebase.database().ref().child('users').child(user.uid).set({
+          name: "Javier",
+          age: 12,
+          gender: "male",
+          email: "test_email@gmail.com",
+          profile_picture : "placeholder picture",
+          points: 5,
+          description: "Example description"
+        });
+    });
+
+  firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+    if (error){
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(error.code);
+      console.log(error.message);
+    }
+  });
+});
+
 // EXAMPLE TEST CODE TO CHECK IF FIREBASE WRITING WORK
   // firebase.database().ref().child('users').child('firstUser').set({
   //     username: "name",
