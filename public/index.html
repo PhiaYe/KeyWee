@@ -12,20 +12,57 @@
         Name: <br>
         <input type='text' name='name' id='name'><br>
         Password: <br>
-        <input type='text' name='name' id='password'><br>
+        <input type='text' name='name' id='signupPassword'><br>
         Age: <br>
         <input type='text' name='age' id='age'><br>
         Gender: <br>
         <input type='text' name='gender' id='gender'><br>
         Email: <br>
-        <input type='text' name='email' id='email'><br>
+        <input type='text' name='email' id='signupEmail'><br>
         ProfilePic: <br>
         <input type='text' name='profilePic' id='profilePic'><br>
         Description: <br>
         <textarea type='text' name='message' id='description'>
         </textarea>
         <input type='submit' value='sign-up'>
+        <br>
+        <br>
+        <br>
     </form>
+
+    <form id="login-form">
+        Email <br>
+        <input type='text' name='name' id='loginEmail'><br>
+        Password: <br>
+        <input type='text' name='name' id='password'><br>
+        <input type='submit' value='login'>
+        <br>
+        <br>
+        <br>
+    </form>
+
+    <form id="post-form">
+
+      Favour title: <br>
+      <input type='text' name='name' id='title'><br>
+      Location: <br>
+      <input type='text' name='location' id='location'><br>
+      Start Time: <br>
+      <input type='text' name='startTime' id='sTime'><br>
+      End Time: <br>
+      <input type='text' name='endTime' id='eTime'><br>
+      Points Awarded: <br>
+      <input type='text' name='age' id='points'><br>
+      Openings: <br>
+      <input type='text' name='age' id='openings'><br>
+      Favour Description: <br>
+      <textarea type='text' name='message' id='fDescription'>
+      </textarea>
+      <input type='submit' value='post-favour'>
+    </form>
+
+    <h1 id="tester"></h1>
+
     <!-- <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script> -->
     <script>
     // Initialize Firebase
@@ -44,20 +81,52 @@
 
     document.getElementById('signup-form').addEventListener('submit', submitSignUp);
 
+    document.getElementById('login-form').addEventListener('submit', submitLogin);
+
+    document.getElementById('post-form').addEventListener('submit', submitFavourPost);
+
     function submitSignUp(e) {
         e.preventDefault();
         //Get values
         var name = getInputVal('name');
-        var password = getInputVal('password');
+        var password = getInputVal('signupPassword');
         var profilePic = getInputVal('profilePic');
         var gender = getInputVal('gender');
         var age = getInputVal('age');
         var description = getInputVal('description');
-        var email = getInputVal('email');
+        var email = getInputVal('signupEmail');
         console.log(name);
 
         saveUsers(name, password, profilePic, gender, age, description, email);
     }
+
+    function submitLogin(e) {
+        e.preventDefault();
+        //Get values
+        var email = getInputVal('loginEmail');
+        var password = getInputVal('password');
+
+        login(email, password);
+    }
+
+
+
+    function submitFavourPost(e) {
+        e.preventDefault();
+        //Get values
+        var title = getInputVal('title');
+        var location = getInputVal('location');
+        var startTime = getInputVal('sTime');
+        var endTime = getInputVal('eTime');
+        var points = getInputVal('points');
+        var openings = getInputVal('openings');
+        var description = getInputVal('fDescription');
+        console.log(name);
+
+        postFavour(title, location, startTime, endTime, points, openings, description);
+        favourDetail();
+    }
+
     //Function to get form values
     function getInputVal(id) {
         return document.getElementById(id).value;
@@ -94,8 +163,70 @@
           console.log(error.code);
           console.log(error.message);
         }
+        else{
+          //LOG INTO THE WEBSITE WITH THE ACCOUNT THAT YOU JUST CREATED
+        }
       });
     });
+    }
+
+
+    function login(email, password) {
+      console.log(email);
+      console.log(password);
+
+      firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        if (error){
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(error.code);
+          console.log(error.message);
+        }
+        else{
+          //LOGIN TO ACCOUNT
+        }
+      });
+    }
+
+    function postFavour(title, location, startTime, endTime, pointsGiven, openings, description){
+      var user = firebase.auth().currentUser;
+
+      if (user){
+        var dbRef = firebase.database().ref().child('users').child(user.uid).child('name');
+        firebase.database().ref().child('users').child(user.uid).child('name').once('value').then(function(snapshot){
+          var ref = firebase.database().ref().child('favours').push()
+
+          ref.set({
+              title: title,
+              location: location,
+              startTime: startTime,
+              endTime: endTime,
+              description : description,
+              points: pointsGiven,
+              openings: openings,
+              eventOwner: snapshot.val(),
+              eventOwnerID: user.uid,
+              eventID: ref.getKey(),
+              latitude: "seperately calculated",
+              longitude: "seperately calculated"
+            });
+        });
+      }
+    }
+
+    function favourDetail(){
+      var ref = firebase.database().ref().child('favours');
+      ref.once('value').then(function(snapshot) {
+
+          for (var key in snapshot.val()) {
+            var location = snapshot.val()[key]['location']
+          console.log(location);
+          //THIS IS WHERE YOU PUT IN CODE TO DO WHAT YOU WANT WITH Location
+          //SHOULD BE ABLE TO ACCESS LATITUDE AND LONGITUDE WITH location["latitutde"] and location["longitude"],
+          //once we create locations with those properties; atm all locations have pure filler and garbage in em
+        }
+        });
     }
 
     </script>
