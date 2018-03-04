@@ -4,81 +4,100 @@
     <meta charset="utf-8">
     <title>Firebase web QuickStart </title>
     <!-- <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
   </head>
   <body>
 
-  <!-- Value -->
-  <!-- <pre id="object"></pre> -->
-  <!-- Child -->
-    <h1 id="bigOne"></h1>
-
-    <!-- <script src="app.js"></script> -->
-
-    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+    <form id="signup-form">
+        Name: <br>
+        <input type='text' name='name' id='name'><br>
+        Password: <br>
+        <input type='text' name='name' id='password'><br>
+        Age: <br>
+        <input type='text' name='age' id='age'><br>
+        Gender: <br>
+        <input type='text' name='gender' id='gender'><br>
+        Email: <br>
+        <input type='text' name='email' id='email'><br>
+        ProfilePic: <br>
+        <input type='text' name='profilePic' id='profilePic'><br>
+        Description: <br>
+        <textarea type='text' name='message' id='description'>
+        </textarea>
+        <input type='submit' value='sign-up'>
+    </form>
+    <!-- <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script> -->
     <script>
-      // Initialize Firebase
-      var config = {
-        apiKey: "AIzaSyAnbOzwuoz1Ng3k9IuNNFiIusfPkl2OfJQ",
-        authDomain: "keywee-aeba7.firebaseapp.com",
-        databaseURL: "https://keywee-aeba7.firebaseio.com",
-        projectId: "keywee-aeba7",
-        storageBucket: "keywee-aeba7.appspot.com",
-        messagingSenderId: "150139905163"
-      };
-      firebase.initializeApp(config);
-
-  var bigOne = document.getElementById('bigOne');
-  var dbRef = firebase.database().ref().child('text');
-  dbRef.on('value', snap => bigOne.innerText = snap.val());
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyAnbOzwuoz1Ng3k9IuNNFiIusfPkl2OfJQ",
+      authDomain: "keywee-aeba7.firebaseapp.com",
+      databaseURL: "https://keywee-aeba7.firebaseio.com",
+      projectId: "keywee-aeba7",
+      storageBucket: "keywee-aeba7.appspot.com",
+      messagingSenderId: "150139905163"
+    };
+    firebase.initializeApp(config);
 
 
-  var email = "javier.xing127@gmail.com";
-  var password = "password";
+    var usersRef = firebase.database().ref('users');
 
-  firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error){
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    console.log(error.code);
-    console.log(error.message);
-  }).then(function(){
+    document.getElementById('signup-form').addEventListener('submit', submitSignUp);
 
-    firebase.auth().onAuthStateChanged(function(user) {
-      // User is signed in.
-      firebase.database().ref().child('users').child(user.uid).set({
-          name: "Javier",
-          age: 12,
-          gender: "male",
-          email: "test_email@gmail.com",
-          profile_picture : "placeholder picture",
-          points: 5,
-          description: "Example description"
-        });
-    });
+    function submitSignUp(e) {
+        e.preventDefault();
+        //Get values
+        var name = getInputVal('name');
+        var password = getInputVal('password');
+        var profilePic = getInputVal('profilePic');
+        var gender = getInputVal('gender');
+        var age = getInputVal('age');
+        var description = getInputVal('description');
+        var email = getInputVal('email');
+        console.log(name);
 
-  firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-    if (error){
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      console.log(error.code);
-      console.log(error.message);
+        saveUsers(name, password, profilePic, gender, age, description, email);
     }
-  });
-});
+    //Function to get form values
+    function getInputVal(id) {
+        return document.getElementById(id).value;
+    }
 
-// EXAMPLE TEST CODE TO CHECK IF FIREBASE WRITING WORK
-  // firebase.database().ref().child('users').child('firstUser').set({
-  //     username: "name",
-  //     email: "email",
-  //     profile_picture : "image"
-  //   });
-  //
-  //   firebase.database().ref().child('users').child('secondUser').set({
-  //       username: "this and that",
-  //       email: "email",
-  //       profile_picture : "image"
-  //     });
 
-</script>
+
+    function saveUsers(name, password, profilePic, gender, age, description, email) {
+      firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error){
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(error.code);
+        console.log(error.message);
+      }).then(function(){
+
+        firebase.auth().onAuthStateChanged(function(user) {
+          // User is signed in.
+          firebase.database().ref().child('users').child(user.uid).set({
+              name: name,
+              age: age,
+              gender: gender,
+              email: email,
+              profile_picture : profilePic,
+              points: 5,
+              description: description
+            });
+        });
+
+      firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        if (error){
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(error.code);
+          console.log(error.message);
+        }
+      });
+    });
+    }
+
+    </script>
   </body>
 </html>
