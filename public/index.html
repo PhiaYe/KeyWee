@@ -1,0 +1,29 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Firebase web QuickStart </title>
+  </head>
+  <body>
+
+    <h1 id="bigOne"></h1>
+
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyAnbOzwuoz1Ng3k9IuNNFiIusfPkl2OfJQ",
+        authDomain: "keywee-aeba7.firebaseapp.com",
+        databaseURL: "https://keywee-aeba7.firebaseio.com",
+        projectId: "keywee-aeba7",
+        storageBucket: "keywee-aeba7.appspot.com",
+        messagingSenderId: "150139905163"
+      };
+      firebase.initializeApp(config);
+
+  var bigOne = document.getElementById('bigOne');
+  var dbRef = firebase.database().ref().child('text');
+  dbRef.on('value', snap => bigOne.innerText = snap.val());
+</script>
+  </body>
+</html>
