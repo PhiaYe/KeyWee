@@ -3,10 +3,16 @@
   <head>
     <meta charset="utf-8">
     <title>Firebase web QuickStart </title>
+    <!-- <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script> -->
   </head>
   <body>
 
+  <!-- Value -->
+  <!-- <pre id="object"></pre> -->
+  <!-- Child -->
     <h1 id="bigOne"></h1>
+
+    <!-- <script src="app.js"></script> -->
 
     <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
     <script>
@@ -24,6 +30,20 @@
   var bigOne = document.getElementById('bigOne');
   var dbRef = firebase.database().ref().child('text');
   dbRef.on('value', snap => bigOne.innerText = snap.val());
+
+// EXAMPLE TEST CODE TO CHECK IF FIREBASE WRITING WORK
+  // firebase.database().ref().child('users').child('firstUser').set({
+  //     username: "name",
+  //     email: "email",
+  //     profile_picture : "image"
+  //   });
+  //
+  //   firebase.database().ref().child('users').child('secondUser').set({
+  //       username: "this and that",
+  //       email: "email",
+  //       profile_picture : "image"
+  //     });
+
 </script>
   </body>
 </html>
